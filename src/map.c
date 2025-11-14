@@ -23,6 +23,8 @@ int map_init(map_t *self, map_type_t type, uint32_t w, uint32_t h) {
     self->items = calloc(w * h, sizeof(item_t));
     if (!self->items) return -1;
 
+    map_construct(self);
+
     return 0;
 }
 
@@ -54,11 +56,11 @@ static void map_construct(map_t *self) {
 }
 
 static void map_construct_world(map_t *self) {
-
+    self = self; // TODO
 }
 
 static void map_construct_dungeon(map_t *self) {
-
+    self = self; // TODO
 }
 
 static void map_construct_test(map_t *self) {
