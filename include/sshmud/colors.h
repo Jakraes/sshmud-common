@@ -1,0 +1,31 @@
+#ifndef COLORS_H
+#define COLORS_H
+
+typedef enum {
+    COLOR_BLACK = 0,
+    COLOR_RED,
+    COLOR_GREEN,
+    COLOR_YELLOW,
+    COLOR_BLUE,
+    COLOR_MAGENTA,
+    COLOR_CYAN,
+    COLOR_WHITE,
+    COLOR_BRIGHT_BLACK,
+    COLOR_BRIGHT_RED,
+    COLOR_BRIGHT_GREEN,
+    COLOR_BRIGHT_YELLOW,
+    COLOR_BRIGHT_BLUE,
+    COLOR_BRIGHT_MAGENTA,
+    COLOR_BRIGHT_CYAN,
+    COLOR_BRIGHT_WHITE,
+    COLOR_COUNT
+} color_t;
+
+typedef enum {
+    MOD_DIM = 0,
+    MOD_NORMAL = 1,
+    MOD_BOLD = 2,
+    MOD_COUNT
+} modifier_t;
+
+#endif
