@@ -1,9 +1,8 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "entity.h"
-#include "tile.h"
-#include "item.h"
+#include "chunk.h"
+#include "external/stb_ds.h"
 
 typedef enum {
     MAP_WORLD = 0,
@@ -13,13 +12,13 @@ typedef enum {
 
 typedef struct {
     map_type_t type;
-    uint32_t w, h;
-    tile_t *tiles;
-    entity_t *entities;
-    item_t *items;
+    uint64_t seed;
+    struct { chunk_pos_t key; chunk_t *value; } *chunks;   
 } map_t;
 
-int map_init(map_t *self, map_type_t type, uint32_t w, uint32_t h);
+int map_init(map_t *self, map_type_t type);
 int map_destroy(map_t *self);
+chunk_t *map_get_chunk(map_t *self, chunk_pos_t pos);
+int map_generate_chunk(map_t *self, chunk_pos_t pos);
 
 #endif

@@ -1,11 +1,11 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
-#include <entity.h>
-#include <item.h>
-#include <tile.h>
+#include "entity.h"
+#include "item.h"
+#include "tile.h"
 
-#define CHUNK_SIZE 16
+#define CHUNK_SIZE 8
 
 typedef struct {
     int64_t x, y;

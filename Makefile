@@ -12,7 +12,7 @@ LIBNAME := libsshmud.a
 SRCS := $(wildcard $(SRCDIR)/*.c)
 OBJS := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
-CFLAGS := -std=c11 -O2 -Wall -Wextra -Werror -fPIC
+CFLAGS := -std=gnu99 -O2 -Wall -Wextra -Werror -fPIC
 CPPFLAGS := -I$(INCDIR)
 
 .PHONY: all clean install dirs
