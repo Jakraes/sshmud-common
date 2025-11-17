@@ -19,9 +19,6 @@ static void item_construct(item_t *self, item_type_t type) {
         case ITEM_IRON_SHORTSWORD:
             item_construct_iron_shortsword(self);
             break;
-        default:
-            /* Handle unknown item types if necessary */
-            break;
     }
 }
 

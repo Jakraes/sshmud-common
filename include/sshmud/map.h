@@ -18,7 +18,5 @@ typedef struct {
 
 int map_init(map_t *self, map_type_t type);
 int map_destroy(map_t *self);
-chunk_t *map_get_chunk(map_t *self, chunk_pos_t pos);
-int map_generate_chunk(map_t *self, chunk_pos_t pos);
 
 #endif

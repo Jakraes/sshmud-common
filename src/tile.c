@@ -23,9 +23,6 @@ static void tile_construct(tile_t *self, tile_type_t type) {
         case TILE_WATER:
             tile_construct_water(self);
             break;
-        default:
-            /* Handle unknown tile types if necessary */
-            break;
     }
 }
 
