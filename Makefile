@@ -1,38 +1,96 @@
-CC := gcc
-AR := ar
-RANLIB := ranlib
+# =============================================================================
+#  sshmud – Static library + test suite
+# =============================================================================
 
-SRCDIR := src
-INCDIR := include
-BIN_DIR := bin
-OBJDIR := build
+CC      := gcc
+AR      := ar
+RANLIB  := ranlib
 
+# Directories
+SRCDIR        := src
+INCDIR        := include
+BINDIR        := bin
+OBJDIR        := build
+
+TESTDIR       := test
+TEST_OBJDIR   := $(TESTDIR)/build
+TEST_BINDIR   := $(TESTDIR)/bin
+
+# Library
 LIBNAME := libsshmud.a
+LIB     := $(BINDIR)/$(LIBNAME)
 
-SRCS := $(wildcard $(SRCDIR)/*.c)
-OBJS := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
+SRCS    := $(wildcard $(SRCDIR)/*.c)
+OBJS    := $(SRCS:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
-CFLAGS := -std=gnu99 -O2 -Wall -Wextra -Werror -fPIC
-CPPFLAGS := -I$(INCDIR)
+# Tests
+TEST_SRCS := $(wildcard $(TESTDIR)/*.c)
+TEST_OBJS := $(TEST_SRCS:$(TESTDIR)/%.c=$(TEST_OBJDIR)/%.o)
+TEST_EXES := $(TEST_SRCS:$(TESTDIR)/%.c=$(TEST_BINDIR)/%)
 
-.PHONY: all clean install dirs
+# Flags
+CFLAGS       := -std=gnu99 -O2 -Wall -Wextra -Werror -fPIC
+CPPFLAGS     := -I$(INCDIR)
 
-all: dirs $(BIN_DIR)/$(LIBNAME)
+TEST_CPPFLAGS := -I$(INCDIR)
+TEST_LDFLAGS  := -L$(BINDIR)
+TEST_LDLIBS   := -lsshmud
+TEST_LIBS     := -pthread
 
-dirs:
-	mkdir -p $(BIN_DIR) $(OBJDIR)
+# Default target
+.PHONY: all clean install test test-run dirs
+all: dirs $(LIB)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c
+# -----------------------------------------------------------------------------
+# Directory creation
+# -----------------------------------------------------------------------------
+dirs: | $(BINDIR) $(OBJDIR) $(TEST_OBJDIR) $(TEST_BINDIR)
+
+$(BINDIR) $(OBJDIR) $(TEST_OBJDIR) $(TEST_BINDIR):
+	@mkdir -p $@
+
+# -----------------------------------------------------------------------------
+# Library
+# -----------------------------------------------------------------------------
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
-$(BIN_DIR)/$(LIBNAME): $(OBJS)
-	$(AR) rcs $@ $(OBJS)
+$(LIB): $(OBJS) | $(BINDIR)
+	$(AR) rcs $@ $^
 	$(RANLIB) $@
 
-clean:
-	rm -rf $(OBJDIR) $(BIN_DIR)/$(LIBNAME) $(BIN_DIR)/$(INCDIR)
+# -----------------------------------------------------------------------------
+# Tests
+# -----------------------------------------------------------------------------
+$(TEST_OBJDIR)/%.o: $(TESTDIR)/%.c | $(LIB) dirs
+	$(CC) $(TEST_CPPFLAGS) $(CFLAGS) -c $< -o $@
 
+$(TEST_BINDIR)/%: $(TEST_OBJDIR)/%.o | $(LIB) dirs
+	$(CC) $(CFLAGS) $< -o $@ $(TEST_LDFLAGS) $(TEST_LDLIBS) $(TEST_LIBS)
+
+test: $(TEST_EXES)
+
+test-run: test
+	@echo "Running all tests..."
+	@failed=0; \
+	for t in $(TEST_EXES); do \
+		echo "=== $$t ==="; \
+		./$$t || { echo "FAIL: $$t"; failed=1; }; \
+		echo; \
+	done; \
+	[ $$failed -eq 0 ] && echo "All tests PASSED!" || { echo "Some tests FAILED."; exit 1; }
+
+# -----------------------------------------------------------------------------
+# Install (copy library + headers)
+# -----------------------------------------------------------------------------
 install: all
-	@mkdir -p $(BIN_DIR)
-	cp -a $(INCDIR) $(BIN_DIR)/
-	@echo "Built $(BIN_DIR)/$(LIBNAME) and copied headers to $(BIN_DIR)/$(INCDIR)"
+	@cp -a $(INCDIR) $(BINDIR)/
+
+# -----------------------------------------------------------------------------
+# Clean
+# -----------------------------------------------------------------------------
+clean:
+	rm -rf $(OBJDIR) $(BINDIR)/$(LIBNAME) $(BINDIR)/$(INCDIR)
+	rm -rf $(TEST_OBJDIR) $(TEST_BINDIR)
+
+# =============================================================================

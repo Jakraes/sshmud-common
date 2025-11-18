@@ -10,6 +10,7 @@ typedef enum {
 
 typedef struct {
     object_t obj;
+    tile_type_t type;
 } tile_t;
 
 int tile_init(tile_t *self, tile_type_t type, int64_t x, int64_t y); 

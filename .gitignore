@@ -56,3 +56,4 @@ dkms.conf
 
 # Ignore all files in the bin/ directory.
 bin/**
+test/bin/**

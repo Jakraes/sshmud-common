@@ -10,13 +10,12 @@ int entity_init(entity_t *self, const entity_type_t type, const int64_t x, const
 
     self->obj.x = x;
     self->obj.y = y;
+    self->type = type;
 
     return 0;
 }
 
 static void entity_construct(entity_t *self, const entity_type_t type) {
-    self->type = type;
-
     switch (type) {
         case ENTITY_PLAYER:
             entity_construct_player(self);

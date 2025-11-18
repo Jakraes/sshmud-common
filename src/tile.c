@@ -11,6 +11,7 @@ int tile_init(tile_t *self, tile_type_t type, int64_t x, int64_t y) {
 
     self->obj.x = x;
     self->obj.y = y;
+    self->type = type;
 
     return 0;
 }
