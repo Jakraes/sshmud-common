@@ -14,7 +14,7 @@ int map_init(map_t *self, uint64_t seed, map_type_t type) {
 int map_destroy(map_t *self) {
     if (!self) return -1;
  
-    for (size_t i = 0; i < hmlen(self->chunks); i++) {
+    for (int64_t i = 0; i < hmlen(self->chunks); i++) {
         free(self->chunks[i].value);
     }
 
